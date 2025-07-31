@@ -14,6 +14,37 @@ npm install
 npm start
 ```
 
+## Authentication
+
+The SDK handles authentication automatically with zero configuration:
+
+### First Run (Development)
+On your first run, the SDK will prompt you interactively:
+```
+🚀 Welcome to a11ops! Let's get you set up.
+
+You'll need your API key from your workspace.
+Get it at: https://a11ops.com/dashboard
+
+Enter your API key: [paste your key here]
+
+✅ Configuration saved! You're all set.
+```
+
+After this initial setup, your configuration is saved to `~/.a11ops/config.json` and you won't be prompted again.
+
+### Production/CI Environment
+Set the environment variable before running:
+```bash
+export A11OPS_API_KEY=your-api-key-here
+npm start
+```
+
+### Getting Your API Key
+1. Log in to [a11ops Dashboard](https://a11ops.com/dashboard)
+2. Navigate to your workspace settings
+3. Copy your API key from the "API Keys" section
+
 ## What it does
 
 ### `index.js` - Basic Alert Example
@@ -51,4 +82,11 @@ In production, set the environment variable:
 ```bash
 export A11OPS_API_KEY=your-api-key-here
 npm start
+```
+
+### Reset Configuration
+To reset your local configuration and set up a new API key:
+```bash
+rm -rf ~/.a11ops
+npm start  # Will prompt for new credentials
 ```

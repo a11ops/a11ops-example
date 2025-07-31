@@ -8,8 +8,7 @@ try {
   await a11ops.alert({
     title: "Test Alert from Example Project",
     message: "This is a test alert to verify the SDK is working correctly",
-    priority: "info",
-    workspace: "development"
+    priority: "info"
   });
   
   console.log('✅ Alert sent successfully!\n');

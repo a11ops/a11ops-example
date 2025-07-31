@@ -6,9 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "monitor": "node monitor.js"
+    "monitor": "node monitor.js",
+    "debug": "node debug.js"
   },
   "dependencies": {
-    "@a11ops/sdk": "^1.0.0"
+    "@a11ops/sdk": "^1.0.0",
+    "axios": "^1.6.0"
   }
 }
