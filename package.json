@@ -1,0 +1,14 @@
+{
+  "name": "a11ops-example",
+  "version": "1.0.0",
+  "description": "Simple example project using @a11ops/sdk",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "monitor": "node monitor.js"
+  },
+  "dependencies": {
+    "@a11ops/sdk": "^1.0.0"
+  }
+}
