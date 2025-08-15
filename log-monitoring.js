@@ -8,16 +8,71 @@
 import { a11ops } from '@a11ops/sdk';
 import A11ops from '@a11ops/sdk';
 import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import readline from 'readline';
 
-// Configure the client for log monitoring
-const logClient = new A11ops(process.env.A11OPS_API_KEY || 'your-api-key', {
-  baseUrl: process.env.A11OPS_API_URL || 'https://api.a11ops.com',
-  logMonitoring: true,
-  environment: process.env.NODE_ENV || 'development',
-  release: process.env.npm_package_version || '1.0.0',
-  autoCaptureErrors: true,
-  autoBreadcrumbs: true
-});
+// Function to get API key (check env, config file, or prompt)
+async function getApiKey() {
+  // Check environment variable first
+  if (process.env.A11OPS_API_KEY) {
+    return process.env.A11OPS_API_KEY;
+  }
+  
+  // Check config file
+  const configPath = path.join(os.homedir(), '.a11ops', 'config.json');
+  try {
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+      if (config.apiKey) {
+        return config.apiKey;
+      }
+    }
+  } catch (error) {
+    // Config not found or invalid
+  }
+  
+  // Prompt for API key
+  console.log('\n🚀 Welcome to a11ops! Let\'s get you set up.\n');
+  console.log('You\'ll need your API key from your workspace.');
+  console.log('Get it at: https://a11ops.com/dashboard\n');
+  
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  
+  return new Promise((resolve, reject) => {
+    rl.question('Enter your API key: ', (apiKey) => {
+      rl.close();
+      
+      if (!apiKey) {
+        reject(new Error('API key is required'));
+        return;
+      }
+      
+      apiKey = apiKey.trim();
+      
+      // Save for future use
+      const configDir = path.dirname(configPath);
+      if (!fs.existsSync(configDir)) {
+        fs.mkdirSync(configDir, { recursive: true });
+      }
+      
+      fs.writeFileSync(configPath, JSON.stringify({
+        apiKey,
+        createdAt: new Date().toISOString()
+      }, null, 2));
+      
+      console.log('\n✅ Configuration saved! You\'re all set.\n');
+      resolve(apiKey);
+    });
+  });
+}
+
+// Initialize logClient as null, will be set up in main function
+let logClient = null;
 
 // ============================================
 // 1. Simulated E-commerce Application Example
@@ -443,6 +498,17 @@ async function demonstrateErrorScenarios() {
 // ============================================
 
 async function runExamples() {
+  // Initialize the log client with API key
+  const apiKey = await getApiKey();
+  logClient = new A11ops(apiKey, {
+    baseUrl: process.env.A11OPS_API_URL || 'https://api.a11ops.com',
+    logMonitoring: true,
+    environment: process.env.NODE_ENV || 'development',
+    release: process.env.npm_package_version || '1.0.0',
+    autoCaptureErrors: true,
+    autoBreadcrumbs: true
+  });
+  
   console.log('🚀 a11ops Log Monitoring Example\n');
   console.log('==================================\n');
 
